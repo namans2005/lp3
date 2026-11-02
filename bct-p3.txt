@@ -1,0 +1,31 @@
+Pract3: BCT bankAccount -> 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+contract BankSimple {
+    address public owner;
+    constructor() {
+        owner = msg.sender;
+    }
+
+    //deposit eth
+    function deposit() public payable {
+        require(msg.value > 0, "Deposit > 0");
+    }
+
+    //withdraw
+    function withdraw(uint256 amount) public {
+        require(msg.sender == owner,"Not owner");
+        require(amount <= address(this).balance,"Not enough");
+        (bool success, ) = payable(owner).call{value: amount}("");
+        require(success, "Transfer failed");
+    }
+
+    //show balance
+    function showBalance() public view returns(uint256){
+        return address(this).balance;
+    }
+
+    //accept eth
+    receive() external payable {}
+}
